@@ -1,0 +1,13 @@
+<h2>Create an account</h2>
+<form action="/auth/signup" method="post">
+    <label for="username">Username: </label>
+    <input type="text" name="username" placeholder="John123">
+    <label for="email">Email: </label>
+    <input type="text" name="email" placeholder="johndoe@email.com">
+    <label for="password">Password: </label>
+    <input type="password" name="password" placeholder="********">
+    <button type="submit">Create account</button>
+</form>
+{{#if error}}
+<p id="error">{{error}}</p>
+{{/if}}
