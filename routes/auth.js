@@ -6,7 +6,8 @@ const saltRounds = 8
 /* GET signup page */
 /* ROUTE /auth/signup */
 router.get("/signup", (req, res, next) => {
-    res.render("./auth/signup");
+    const user = req.session.currentUser;
+    res.render("./auth/signup", {user});
   });
 
 /* POST signup route */
@@ -15,14 +16,17 @@ router.post("/signup", async (req, res, next) => {
     const { username, email, password } = req.body;
     if (!username || !email ||!password) {
         res.render("./auth/signup", {error: 'Must fill all fields'});
+        return;
     };
     const regexEmail = /[^@ \t\r\n]+@[^@ \t\r\n]+\.[^@ \t\r\n]+/
     if (!regexEmail.test(email)) {
         res.render("./auth/signup", {error: 'Must provide a valid email'});
+        return;
     };
     const regexPassword = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$ %^&*-]).{8,}$/;
     if (!regexPassword.test(password)) {
         res.render("./auth/signup", {error: 'Password must have at least 8 characters and contain one uppercase and lowercase letter, a special character and a number'});
+        return;
     };
     try {
         const foundUser = await User.findOne({ username });
@@ -38,7 +42,7 @@ router.post("/signup", async (req, res, next) => {
         const salt = await bcrypt.genSalt(saltRounds);
         const hashedPassword = await bcrypt.hash(password, salt);
         await User.create({ username, email, hashedPassword });
-        res.redirect('/dashboard');
+        res.redirect('/users/login');
     } catch (error) {
         next(error);
     }

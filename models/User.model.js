@@ -13,7 +13,8 @@ const userSchema = new Schema({
     type: String,
     unique: [true, 'An account with that email already exists'],
     required: [true, 'Add an email'],
-    trim: true
+    trim: true,
+    lowecase: true
   },
   hashedPassword: {
     type: String,
